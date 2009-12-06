@@ -1,0 +1,2 @@
+#!/bin/bash
+./a.out -p 2000 -t 500 -m 200 -g 400 -c 100 <./problems/bcsstk01.mtx
