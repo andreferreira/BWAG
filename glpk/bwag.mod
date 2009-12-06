@@ -26,8 +26,8 @@ subject to
        then (sum{j in NUMBERS} j*line[x,j])
        else (sum{j in NUMBERS} j*line[y,j])) 
      = (sum{j in NUMBERS} j*line[y,j]);
-  Unicidade {x in VALUES, y in VALUES} :
+  Unicidade {x in VALUES, y in VALUES, i in NUMBERS, j in NUMBERS} :
       if InitialColumn[x] = InitialColumn[y] and InitialLine[x] = InitialLine[y] 
-      then _
-      else 
+      then 2
+      else line[x,i] + column[x,i] + line[y,j] + line[y,j] <= 3;
 end;
