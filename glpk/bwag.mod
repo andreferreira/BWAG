@@ -1,8 +1,11 @@
 set VALUES;
-set NUMBERS := 1..card(VALUES);
+
 
 param InitialLine {i in VALUES};
 param InitialColumn {i in VALUES};
+param Size;
+
+set NUMBERS := 1..Size;
 
 var column {i in VALUES, j in NUMBERS} binary;
 var line {i in VALUES, j in NUMBERS} binary;
@@ -27,7 +30,7 @@ subject to
        else (sum{j in NUMBERS} j*line[y,j])) 
      = (sum{j in NUMBERS} j*line[y,j]);
   Unicidade {x in VALUES, y in VALUES, i in NUMBERS, j in NUMBERS} :
-      if InitialColumn[x] = InitialColumn[y] and InitialLine[x] = InitialLine[y] 
+      if (InitialColumn[x] = InitialColumn[y] and InitialLine[x] = InitialLine[y])
       then 2
-      else line[x,i] + column[x,i] + line[y,j] + line[y,j] <= 3;
+      else line[x,i] + column[x,j] + line[y,i] + column[y,j] <= 3;
 end;
