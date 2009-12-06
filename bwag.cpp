@@ -188,43 +188,6 @@ int fitness(Individual individual) {
 	return bandwidth(individual);
 }
 
-class Comparator {
-	public:
-	vector<int> fitnessCache;
-	Comparator(const vector<Individual> &population) {
-		unsigned long long avgFitness = 0;
-		fitnessCache.resize(population.size());
-		for (int i = 0; i < population.size();i++) {
-			fitnessCache[i] = fitness(population[i]);
-			avgFitness += fitnessCache[i];
-		}
-		printf("%d\n",avgFitness/population.size());
-	}
-	bool operator() (int i,int j) { return (fitnessCache[i]<fitnessCache[j]);}
-};
-
-int improved = 0;
-
-void tournament(const vector<Individual> &population, int tournament_size, Individual &childA, Individual &childB, Comparator comp) {
-	vector<int> tournamentMembers = random_sequence(population_size);
-	sort(tournamentMembers.begin(),tournamentMembers.begin() + tournament_size, comp);
-	Individual a = population[tournamentMembers[0]];
-	Individual b = population[tournamentMembers[1]];
-	//printf("%d %d ",fitness(a),fitness(b));
-	two_point_crossover_vector(a.lines,b.lines,childA.lines,childB.lines);
-	two_point_crossover_vector(a.columns,b.columns,childA.columns,childB.columns);
-	int maxParentFit = max(fitness(a),fitness(b));
-	if (fitness(childA) > maxParentFit)
-		improved++;
-	if (fitness(childB) > maxParentFit)
-		improved++;
-	if (fitness(childA) < fitness(a))
-		childA = a;
-	else if (fitness(childB) < fitness(a))
-		childB = a;
-	//printf("%d %d\n",fitness(childA),fitness(childB));
-}
-
 void printAsMatrix(Individual individual) {
 	map<int, map<int,bool> > solution;
 	for (int i = 0; i < nz; i++) {
