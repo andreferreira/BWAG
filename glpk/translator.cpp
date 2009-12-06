@@ -39,14 +39,14 @@ void readInput(FILE* f) {
 	
 	printf("data;\nset VALUES :=");
 	for (i=0; i<nz; i++)
-		printf("%d ",i);
+		printf("%d ",i+1);
 	printf(";\n\nparam Size:= %d;\n",N);
 	printf("param InitialLine:=\n");
 	for (i=0; i<nz; i++)
-		printf("%d %d\n",i,I[i]);
+		printf("%d %d\n",i+1,I[i]+1);
 	printf(";\n\nparam InitialColumn:=\n");
 	for (i=0; i<nz; i++)
-		printf("%d %d\n",i,J[i]);
+		printf("%d %d\n",i+1,J[i]+1);
 	printf(";\n");
 }
 
