@@ -142,9 +142,17 @@ void readInput(FILE* f) {
 	}
 	I = (int *) malloc(nz * sizeof(int));
 	J = (int *) malloc(nz * sizeof(int));
-	
+	bool isPattern = mm_is_pattern(matcode);
 	for (i=0; i<nz; i++) {
-		int ignore = fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val);
+		int readN;
+		if (!isPattern)
+			readN = fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val);
+		else
+			readN = fscanf(f, "%d %d\n", &I[i], &J[i]);
+		if (!(readN == 2 && isPattern) || (readN == 3 && !isPattern)) {
+			printf("Error reading matrix, read %d elements, expected %d",readN, isPattern ? 2 : 3);
+			exit(1);
+		}
 		I[i]--;  /* adjust from 1-based to 0-based */
 		J[i]--;
 		if (I[i] > J[i])
