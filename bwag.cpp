@@ -10,7 +10,8 @@ extern "C" {
 
 using namespace std;
 
-struct Individual {
+class Individual {
+	public:
 	vector<int> order;
 	int fitness;
 };
@@ -20,11 +21,13 @@ int *I, *J; //coordinates of non-null elements
 
 int population_size = 100; //default size, can be set by -p flag
 int seed = 0xDEADCAFE; //default seed, can be set by -s flag
-int generations = 10;
-double percenttournament = 0.1; //number of individuals per tournament
+int generations = 10;//set by -g flag
+double percentTournament = 0.1; //number of individuals per tournament, can be set by -t flag
 int tournamentSize; //percenttournament * population_size
-double mutationRate = 0.1; //odds of an individual to mutate in relation to Population Size
-int numberOfIslands = 1;
+double mutationRate = 0.1; //odds of an individual to mutate in relation to Population Size, can be set by -m flag
+int numberOfIslands = 1; //can be set by -i flag
+int generationsToExchange = 10; //number of generations passed between each exchange
+double percentExchange = 0.1; //% of individuals passed from one island to another during an exchange
 
 void (*selection)(const vector<Individual> &, vector<Individual> &);
 int bandwidth(const Individual &individual) {
@@ -185,7 +188,7 @@ void readOptions(int argc, char *argv[]) {
 					break;
 				case 't':
 					i++;
-					percenttournament = atof(argv[i]);
+					percentTournament = atof(argv[i]);
 					break;
 				case 'm':
 					i++;
@@ -224,19 +227,13 @@ void printAsMatrix(Individual individual) {
 	}
 }
 
-bool compareIndividual(const Individual &a, const Individual &b) {
-	if (a.fitness < b.fitness)
-		return true;
-	return false;
-}
-
 Individual tournament(vector<Individual> population) {
 	Individual best;
-	best.fitness = -9999;
+	best.fitness = 9999;
 	for (int i = 0; i < tournamentSize; i++) {
 		int selected = (rand() % (population.size() - i)) + i;
 		swap(population[i],population[selected]);
-		if (compareIndividual(best,population[i]))
+		if (best.fitness > population[i].fitness)
 			best = population[i];
 	}
 	return best;
@@ -262,12 +259,16 @@ void mutatePopulation(vector<Individual> &population) {
 }
 
 void populationFitness(vector<Individual> &population) {
+	unsigned long long avg = 0;
 	for (int i = 0; i < population.size(); i++) {
 		population[i].fitness = fitness(population[i]);
+		avg += population[i].fitness;
 	}
+	cout<<"Avg:"<<double(avg)/population.size()<<endl;
 }
 
-struct Island {
+class Island {
+	public:
 	vector<Individual> population;
 	vector<Individual> nextPopulation;
 };
@@ -275,7 +276,17 @@ struct Island {
 Individual GAIsland(vector<Individual> initPopulation) {
 	vector<Island> archipelago(numberOfIslands);
 	int perIsland = initPopulation.size() / numberOfIslands;
+	int left = initPopulation.size();
 	for (int island = 0; island < numberOfIslands; island++) { //initialize islands
+		
+		int islandSize;
+		if ((island+1)*perIsland >= initPopulation.size())
+			islandSize = left;
+		else
+			islandSize = perIsland;
+		left -= islandSize;
+		archipelago[island].population.resize(islandSize);
+		cout<<"Hi "<<islandSize<<endl;
 		copy(initPopulation.begin() + island*perIsland,
 			 (island+1)*perIsland >= initPopulation.size() ? initPopulation.end() 
 														   : initPopulation.begin() + (island+1)*perIsland,
@@ -283,26 +294,34 @@ Individual GAIsland(vector<Individual> initPopulation) {
 		archipelago[island].nextPopulation.resize(archipelago[island].population.size());
 	}
 	
-	for (int island = 0; island < numberOfIslands; island++) {
-		selection(archipelago[island].population,archipelago[island].nextPopulation);
-		mutatePopulation(archipelago[island].nextPopulation);
-		swap(archipelago[island].population,archipelago[island].nextPopulation);
+	Individual best;
+	best.fitness = 9999;
+	cout<<"Starting GA"<<endl;
+	for (int g = 0; g < generations; g++) {
+		for (int island = 0; island < numberOfIslands; island++) {
+			populationFitness(archipelago[island].population);
+			for (int i = 0; i < archipelago[island].population.size(); i++)
+				if (best.fitness > archipelago[island].population[i].fitness)
+					best = archipelago[island].population[i];
+			selection(archipelago[island].population,archipelago[island].nextPopulation);
+			mutatePopulation(archipelago[island].nextPopulation);
+			swap(archipelago[island].population,archipelago[island].nextPopulation);
+		}
+		cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
 	}
+	return best;
 }
 
 int main(int argc, char *argv[]) {
 	readOptions(argc,argv);
 	
 	srand(seed);
-	tournamentSize = percenttournament * population_size;
+	tournamentSize = percentTournament * population_size;
 	selection = tournamentSelection;
 	
 	readInput(stdin);
 	
-	Individual normal;
-	normal.order.resize(N);
-	for (int i = 0; i < N; i++) {
-		normal.order[i] = i;
-	}
 	vector<Individual> initPopulation = generateInitialPopulation(population_size);
+	GAIsland(initPopulation);
+	return 0;
 }

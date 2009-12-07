@@ -1,2 +1,2 @@
 #!/bin/bash
-./a.out -p 2000 -t 500 -m 200 -g 400 -c 100 <./problems/bcsstk01.mtx
+./bwag -p 40 -t 0.2 -m 0.1 -g 4000 -i 2 <./problems/bcsstk01.mtx
