@@ -1,3 +1,12 @@
 #!/bin/bash
-#./bwag -p 40 -t 0.2 -m 0.7 -g 8000 -e 100 -x 0.1 -i 4 <./problems/bcsstk01.mtx
-time ./bwag -p 100 -t 0.1 -m 0.6 -g 8000 -e 100 -x 0.1 -i 5 -a 0.5 -b 0.4 <./problems/bcsstk01.mtx
+#-p Tamanho populacao total
+#-t Tamanho do torneio = t * Tamanho Populaçao
+#-m Taxa de mutaçao
+#-g Numero de geraçoes a rodar
+#-e A cada -e geraçoes fazer migraçao
+#-x Populaçao da ilha * -x individuos migram
+#-i Numero de ilhas
+#-a tamanho da casta A relativo a populaçao total
+#-b tamanho da casta B relativo a populaçao total
+time ./bwag -I -p 100 -t 0.1 -m 0.6 -g 8000 -e 100 -x 0.1 -i 5 <./problems/bcsstk01.mtx
+time ./bwag -C -p 100 -t 0.1 -m 0.6 -g 8000 -a 0.5 -b 0.4 <./problems/bcsstk01.mtx

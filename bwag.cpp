@@ -9,12 +9,6 @@ extern "C" {
 #include "mmio.h"
 }
 
-#define ISLAND
-
-#ifndef ISLAND
-#define CASTE
-#endif
-
 using namespace std;
 
 class Individual {
@@ -37,7 +31,9 @@ int generationsToExchange = 10; //number of generations passed between each exch
 double percentExchange = 0.1; //% of individuals from an island passed from one to another during an exchange, can be set by -x flag
 
 double apercent = 0.2; //% of population at a caste, can be set by -a flag
-double bpercent = 0.5; //% of population at b caste, can be set by -a flag
+double bpercent = 0.5; //% of population at b caste, can be set by -b flag
+
+bool useIsland = true;
 
 string outputStatistics = ""; //file where statistics are saved, can be set by -o flag
 
@@ -238,6 +234,12 @@ void readOptions(int argc, char *argv[]) {
 					i++;
 					bpercent = atof(argv[i]);
 					break;
+				case 'I':
+					useIsland = true;
+					break;
+				case 'C':
+					useIsland = false;
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -417,15 +419,12 @@ int main(int argc, char *argv[]) {
 	
 	
 	readInput(stdin);
-	
-	#ifdef ISLAND
-	Individual (*GA)(vector<Individual>)  = GAIsland;
+	Individual (*GA)(vector<Individual>);
+	if (useIsland)
+		GA = GAIsland;
+	else
+		GA = GACaste;
 	exchange = circularExchange;
-	#endif
-	
-	#ifdef CASTE
-	Individual (*GA)(vector<Individual>)  = GACaste;
-	#endif
 	
 	vector<Individual> initPopulation(population_size);
 	generateInitialPopulation(initPopulation);
