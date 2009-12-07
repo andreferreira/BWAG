@@ -12,6 +12,7 @@ using namespace std;
 
 struct Individual {
 	vector<int> order;
+	int fitness;
 };
 
 int N, nz; //dimension is NxN, number of non-null elements
@@ -20,6 +21,8 @@ int *I, *J; //coordinates of non-null elements
 int population_size = 100; //default size, can be set by -p flag
 int seed = 0xDEADCAFE; //default seed, can be set by -s flag
 int generations = 10;
+double percenttournament = 0.1; //number of individuals per tournament
+int tournamentSize; //percenttournament * population_size
 
 int bandwidth(const Individual &individual) {
 	int band = 0;
@@ -63,8 +66,8 @@ void PMX(vector<int> a, vector<int> b, vector<int> &son, int location1, int loca
 	}
 }
 
-void two_point_crossover_vector(vector<int> a, vector<int> b, vector<int> &sonA, vector<int> &sonB) {
-	int size = a.size();
+void two_point_crossover(Individual a, Individual b, Individual &sonA, Individual &sonB) {
+	int size = a.order.size();
 	
 	int location1 = rand() % size;
 	int location2;
@@ -75,11 +78,11 @@ void two_point_crossover_vector(vector<int> a, vector<int> b, vector<int> &sonA,
 	if (location1 > location2)
 		swap(location1,location2); //location1 should be the smaller index
 	
-	sonA.resize(size);
-	sonB.resize(size);
+	sonA.order.resize(size);
+	sonB.order.resize(size);
 
-	PMX(a,b,sonA,location1,location2+1);
-	PMX(b,a,sonB,location1,location2+1);
+	PMX(a.order,b.order,sonA.order,location1,location2+1);
+	PMX(b.order,a.order,sonB.order,location1,location2+1);
 }
 
 Individual mutation(Individual individual) {
@@ -177,6 +180,10 @@ void readOptions(int argc, char *argv[]) {
 					i++;
 					seed = atoi(argv[i]);
 					break;
+				case 't':
+					i++;
+					percenttournament = atof(argv[i]);
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -206,10 +213,44 @@ void printAsMatrix(Individual individual) {
 	}
 }
 
+bool compareIndividual(const Individual &a, const Individual &b) {
+	if (a.fitness < b.fitness)
+		return true;
+	return false;
+}
+
+Individual tournament(vector<Individual> population) {
+	for (int i = 0; i < tournamentSize; i++) {
+		int selected = (rand() % (population.size() - i)) + i;
+		swap(population[i],population[selected]);
+	}
+	sort(population.begin(),population.begin() + tournamentSize, compareIndividual);
+	return population[0];
+}
+
+vector<Individual> tournamentSelection(vector<Individual> population) {
+	vector<Individual> nextPopulation(population.size());
+	for (int i = 0; i < population.size(); i+=2) {
+		Individual a = tournament(population);
+		Individual b = tournament(population);
+		Individual next2; //next1 is nextPopulation[i]
+		two_point_crossover(a,b,nextPopulation[i],next2);
+		if (i + 1 < population.size())
+			nextPopulation[i+1] = next2;
+	}
+}
+
+void populationFitness(vector<Individual> &population) {
+	for (int i = 0; i < population.size(); i++) {
+		population[i].fitness = fitness(population[i]);
+	}
+}
+
 int main(int argc, char *argv[]) {
 	readOptions(argc,argv);
 	
 	srand(seed);
+	tournamentSize = percenttournament * population_size;
 	
 	readInput(stdin);
 	
