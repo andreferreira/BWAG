@@ -149,7 +149,7 @@ void readInput(FILE* f) {
 			readN = fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val);
 		else
 			readN = fscanf(f, "%d %d\n", &I[i], &J[i]);
-		if (!(readN == 2 && isPattern) || (readN == 3 && !isPattern)) {
+		if (!((readN == 2 && isPattern) || (readN == 3 && !isPattern))) {
 			printf("Error reading matrix, read %d elements, expected %d",readN, isPattern ? 2 : 3);
 			exit(1);
 		}

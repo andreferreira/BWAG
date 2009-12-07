@@ -1,11 +1,14 @@
-set VALUES;
 
+param Size;
+set NUMBERS := 1..Size;
+
+param NVALUES;
+set VALUES := 1..NVALUES;
 
 param InitialLine {i in VALUES};
 param InitialColumn {i in VALUES};
-param Size;
 
-set NUMBERS := 1..Size;
+
 
 var neworder {i in NUMBERS, j in NUMBERS} binary;
 var banda >= 0;
