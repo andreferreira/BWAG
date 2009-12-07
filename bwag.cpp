@@ -220,12 +220,15 @@ bool compareIndividual(const Individual &a, const Individual &b) {
 }
 
 Individual tournament(vector<Individual> population) {
+	Individual best;
+	best.fitness = -9999;
 	for (int i = 0; i < tournamentSize; i++) {
 		int selected = (rand() % (population.size() - i)) + i;
 		swap(population[i],population[selected]);
+		if (compareIndividual(best,population[i]))
+			best = population[i];
 	}
-	sort(population.begin(),population.begin() + tournamentSize, compareIndividual);
-	return population[0];
+	return best;
 }
 
 vector<Individual> tournamentSelection(vector<Individual> population) {
