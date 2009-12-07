@@ -8,5 +8,7 @@
 #-i Numero de ilhas
 #-a tamanho da casta A relativo a populaçao total
 #-b tamanho da casta B relativo a populaçao total
+#-I para usar Ilha (default)
+#-C para usar Casta
 time ./bwag -I -p 100 -t 0.1 -m 0.6 -g 8000 -e 100 -x 0.1 -i 5 <./problems/bcsstk01.mtx
 time ./bwag -C -p 100 -t 0.1 -m 0.6 -g 8000 -a 0.5 -b 0.4 <./problems/bcsstk01.mtx
