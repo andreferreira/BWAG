@@ -4,9 +4,16 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <string>
 extern "C" {
 #include "mmio.h"
 }
+
+#define ISLAND
+
+#ifndef ISLAND
+#define CASTE
+#endif
 
 using namespace std;
 
@@ -28,6 +35,11 @@ double mutationRate = 0.1; //odds of an individual to mutate in relation to Popu
 int numberOfIslands = 1; //can be set by -i flag
 int generationsToExchange = 10; //number of generations passed between each exchange, can be set by -e flag
 double percentExchange = 0.1; //% of individuals from an island passed from one to another during an exchange, can be set by -x flag
+
+double apercent = 0.2; //% of population at a caste, can be set by -a flag
+double bpercent = 0.5; //% of population at b caste, can be set by -a flag
+
+string outputStatistics = ""; //file where statistics are saved, can be set by -o flag
 
 void (*selection)(const vector<Individual> &, vector<Individual> &);
 int bandwidth(const Individual &individual) {
@@ -126,12 +138,10 @@ vector<int> random_sequence(int n)
     return array;
 }
 
-vector<Individual> generateInitialPopulation(int population_size) {
-	vector<Individual> population(population_size);
-	for (int i = 0; i < population_size; i++) {
+void generateInitialPopulation(vector<Individual> &population) {
+	for (int i = 0; i < population.size(); i++) {
 		population[i].order = random_sequence(N);
 	}
-	return population;
 }
 
 void readInput(FILE* f) {
@@ -170,7 +180,14 @@ void readInput(FILE* f) {
 		if (I[i] > J[i])
 			swap(I[i],J[i]);
 	}
-	
+}
+
+void printSolution(Individual solution) {
+	printf("%%%%MatrixMarket matrix coordinate pattern symmetric\n");
+	printf("%d %d %d\n",N,N,nz);
+	for (int i=0; i<nz; i++) {
+		printf("%d %d\n",solution.order[I[i]] ,solution.order[J[i]]);
+	}
 }
 
 void readOptions(int argc, char *argv[]) {
@@ -209,6 +226,18 @@ void readOptions(int argc, char *argv[]) {
 					i++;
 					percentExchange = atof(argv[i]);
 					break;
+				case 'o':
+					i++;
+					outputStatistics = argv[i];
+					break;
+				case 'a':
+					i++;
+					apercent = atof(argv[i]);
+					break;
+				case 'b':
+					i++;
+					bpercent = atof(argv[i]);
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -221,7 +250,7 @@ void readOptions(int argc, char *argv[]) {
 	}
 }
 
-int fitness(Individual individual) {
+int fitness(const Individual &individual) {
 	return bandwidth(individual);
 }
 
@@ -251,13 +280,12 @@ Individual tournament(vector<Individual> population) {
 }
 
 void tournamentSelection(const vector<Individual> &population, vector<Individual> &nextPopulation) {
-	nextPopulation.resize(population.size());
-	for (int i = 0; i < population.size(); i+=2) {
+	for (int i = 0; i < nextPopulation.size(); i+=2) {
 		Individual a = tournament(population);
 		Individual b = tournament(population);
 		Individual next2; //next1 is nextPopulation[i]
 		two_point_crossover(a,b,nextPopulation[i],next2);
-		if (i + 1 < population.size())
+		if (i + 1 < nextPopulation.size())
 			nextPopulation[i+1] = next2;
 	}
 }
@@ -271,7 +299,8 @@ void mutatePopulation(vector<Individual> &population) {
 
 void populationFitness(vector<Individual> &population) {
 	//unsigned long long avg = 0;
-	for (int i = 0; i < population.size(); i++) {
+	int size = population.size();
+	for (int i = 0; i < size; i++) {
 		population[i].fitness = fitness(population[i]);
 		//avg += population[i].fitness;
 	}
@@ -325,7 +354,6 @@ Individual GAIsland(vector<Individual> initPopulation) {
 	
 	Individual best;
 	best.fitness = 9999;
-	cout<<"Starting GA"<<endl;
 	for (int g = 0; g < generations; g++) {
 		for (int island = 0; island < numberOfIslands; island++) {
 			populationFitness(archipelago[island].population);
@@ -338,7 +366,44 @@ Individual GAIsland(vector<Individual> initPopulation) {
 		}
 		if (g % generationsToExchange == 0)
 				exchange(archipelago);
+		cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
+	}
+	return best;
+}
+
+bool compare(const Individual &a, const Individual &b) {
+	if (a.fitness > b.fitness)
+		return true;
+	return false;
+}
+
+Individual GACaste(vector<Individual> initPopulation) {
+	vector<Individual> population = initPopulation;	
+	vector<Individual> casteA(initPopulation.size()*apercent);
+	vector<Individual> casteB(initPopulation.size()*bpercent);
+	vector<Individual> casteC(initPopulation.size() - casteA.size() - casteB.size());
+	
+	Individual best;
+	best.fitness = 9999;
+	for (int g = 0; g < generations; g++) {
+		populationFitness(population);
+		for (int i = 0; i < population.size(); i++)
+				if (best.fitness > population[i].fitness)
+					best = population[i];
 		
+		sort(population.begin(),population.end(),compare);
+		selection(population,casteB);
+		mutatePopulation(casteB);
+		generateInitialPopulation(casteC);
+		
+		/*copy back*/
+		copy(casteB.begin(),
+			 casteB.end(),
+			 population.begin() + casteA.size());
+		copy(casteC.begin(),
+			 casteC.end(),
+			 population.begin() + casteA.size() + casteB.size());
+		cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
 	}
 	return best;
 }
@@ -349,12 +414,23 @@ int main(int argc, char *argv[]) {
 	srand(seed);
 	tournamentSize = percentTournament * population_size;
 	selection = tournamentSelection;
-	exchange = circularExchange;
+	
 	
 	readInput(stdin);
-	Individual (*GA)(vector<Individual>)  = GAIsland;
 	
-	vector<Individual> initPopulation = generateInitialPopulation(population_size);
-	cout<<GA(initPopulation).fitness<<endl;
+	#ifdef ISLAND
+	Individual (*GA)(vector<Individual>)  = GAIsland;
+	exchange = circularExchange;
+	#endif
+	
+	#ifdef CASTE
+	Individual (*GA)(vector<Individual>)  = GACaste;
+	#endif
+	
+	vector<Individual> initPopulation(population_size);
+	generateInitialPopulation(initPopulation);
+	Individual solution = GA(initPopulation);
+	cout<<solution.fitness<<endl;
+	//printSolution(solution);
 	return 0;
 }
