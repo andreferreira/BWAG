@@ -23,7 +23,10 @@ int seed = 0xDEADCAFE; //default seed, can be set by -s flag
 int generations = 10;
 double percenttournament = 0.1; //number of individuals per tournament
 int tournamentSize; //percenttournament * population_size
+double mutationRate = 0.1; //odds of an individual to mutate in relation to Population Size
+int numberOfIslands = 1;
 
+void (*selection)(const vector<Individual> &, vector<Individual> &);
 int bandwidth(const Individual &individual) {
 	int band = 0;
 	for (int i = 0; i < nz; i++) {
@@ -184,6 +187,14 @@ void readOptions(int argc, char *argv[]) {
 					i++;
 					percenttournament = atof(argv[i]);
 					break;
+				case 'm':
+					i++;
+					mutationRate = atof(argv[i]);
+					break;
+				case 'i':
+					i++;
+					numberOfIslands = atoi(argv[i]);
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -231,8 +242,8 @@ Individual tournament(vector<Individual> population) {
 	return best;
 }
 
-vector<Individual> tournamentSelection(vector<Individual> population) {
-	vector<Individual> nextPopulation(population.size());
+void tournamentSelection(const vector<Individual> &population, vector<Individual> &nextPopulation) {
+	nextPopulation.resize(population.size());
 	for (int i = 0; i < population.size(); i+=2) {
 		Individual a = tournament(population);
 		Individual b = tournament(population);
@@ -243,9 +254,39 @@ vector<Individual> tournamentSelection(vector<Individual> population) {
 	}
 }
 
+void mutatePopulation(vector<Individual> &population) {
+	for (int i = 0; i < population.size(); i++) {
+		if (rand() % population.size() <= int(mutationRate * population.size()))
+			population[i] = mutation(population[i]);
+	}
+}
+
 void populationFitness(vector<Individual> &population) {
 	for (int i = 0; i < population.size(); i++) {
 		population[i].fitness = fitness(population[i]);
+	}
+}
+
+struct Island {
+	vector<Individual> population;
+	vector<Individual> nextPopulation;
+};
+
+Individual GAIsland(vector<Individual> initPopulation) {
+	vector<Island> archipelago(numberOfIslands);
+	int perIsland = initPopulation.size() / numberOfIslands;
+	for (int island = 0; island < numberOfIslands; island++) { //initialize islands
+		copy(initPopulation.begin() + island*perIsland,
+			 (island+1)*perIsland >= initPopulation.size() ? initPopulation.end() 
+														   : initPopulation.begin() + (island+1)*perIsland,
+		     archipelago[island].population.begin());
+		archipelago[island].nextPopulation.resize(archipelago[island].population.size());
+	}
+	
+	for (int island = 0; island < numberOfIslands; island++) {
+		selection(archipelago[island].population,archipelago[island].nextPopulation);
+		mutatePopulation(archipelago[island].nextPopulation);
+		swap(archipelago[island].population,archipelago[island].nextPopulation);
 	}
 }
 
@@ -254,6 +295,7 @@ int main(int argc, char *argv[]) {
 	
 	srand(seed);
 	tournamentSize = percenttournament * population_size;
+	selection = tournamentSelection;
 	
 	readInput(stdin);
 	
@@ -262,5 +304,5 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < N; i++) {
 		normal.order[i] = i;
 	}
-	vector<Individual> InitPopulation = generateInitialPopulation(population_size);
+	vector<Individual> initPopulation = generateInitialPopulation(population_size);
 }
