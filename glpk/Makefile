@@ -1,5 +1,5 @@
 all: translator.o ../mmio.o
-	g++ -O3 translator.o ../mmio.o
+	g++ -O3 -o translator translator.o ../mmio.o
 
 translator.o: translator.cpp
 	g++ -O3 -c translator.cpp

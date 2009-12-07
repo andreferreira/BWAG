@@ -11,8 +11,7 @@ extern "C" {
 using namespace std;
 
 struct Individual {
-	vector<int> lines;
-	vector<int> columns;
+	vector<int> order;
 };
 
 int N, nz; //dimension is NxN, number of non-null elements
@@ -25,7 +24,7 @@ int generations = 10;
 int bandwidth(const Individual &individual) {
 	int band = 0;
 	for (int i = 0; i < nz; i++) {
-		band = max(band, abs(individual.lines[I[i]] - individual.columns[J[i]]));
+		band = max(band, abs(individual.order[I[i]] - individual.order[J[i]]));
 	}
 	return band;
 }
@@ -84,17 +83,14 @@ void two_point_crossover_vector(vector<int> a, vector<int> b, vector<int> &sonA,
 }
 
 Individual mutation(Individual individual) {
-	int size = individual.lines.size();
+	int size = individual.order.size();
 	int location1 = rand() % size;
 	int location2;
 	do {
 		location2 = rand() % size;
 	} while (location1 == location2); //make sure they are different
 	
-	if (rand() % 2 == 0) //coin flip to decide if we are exchanging a column or line
-		swap(individual.lines[location1],individual.lines[location2]);
-	else
-		swap(individual.columns[location1],individual.columns[location2]);
+	swap(individual.order[location1],individual.order[location2]);
 	return individual;
 }
 
@@ -121,8 +117,7 @@ vector<int> random_sequence(int n)
 vector<Individual> generateInitialPopulation(int population_size) {
 	vector<Individual> population(population_size);
 	for (int i = 0; i < population_size; i++) {
-		population[i].lines = random_sequence(N);
-		population[i].columns = random_sequence(N);
+		population[i].order = random_sequence(N);
 	}
 	return population;
 }
@@ -152,6 +147,8 @@ void readInput(FILE* f) {
 		int ignore = fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val);
 		I[i]--;  /* adjust from 1-based to 0-based */
 		J[i]--;
+		if (I[i] > J[i])
+			swap(I[i],J[i]);
 	}
 	
 }
@@ -191,7 +188,8 @@ int fitness(Individual individual) {
 void printAsMatrix(Individual individual) {
 	map<int, map<int,bool> > solution;
 	for (int i = 0; i < nz; i++) {
-		solution[individual.lines[I[i]]][individual.columns[J[i]]] = true;
+		solution[individual.order[I[i]]][individual.order[J[i]]] = true;
+		solution[individual.order[J[i]]][individual.order[I[i]]] = true;
 	}
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++)
@@ -208,11 +206,9 @@ int main(int argc, char *argv[]) {
 	readInput(stdin);
 	
 	Individual normal;
-	normal.lines.resize(N);
-	normal.columns.resize(N);
+	normal.order.resize(N);
 	for (int i = 0; i < N; i++) {
-		normal.lines[i] = i;
-		normal.columns[i] = i;
+		normal.order[i] = i;
 	}
 	vector<Individual> InitPopulation = generateInitialPopulation(population_size);
 }

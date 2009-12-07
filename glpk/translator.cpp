@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 extern "C" {
 #include "../mmio.h"
 }
@@ -35,6 +36,8 @@ void readInput(FILE* f) {
 		int ignore = fscanf(f, "%d %d %lg\n", &I[i], &J[i], &val);
 		I[i]--;  /* adjust from 1-based to 0-based */
 		J[i]--;
+		if (I[i] < J[i])
+			std::swap(I[i],J[i]);
 	}
 	
 	printf("data;\nset VALUES :=");
