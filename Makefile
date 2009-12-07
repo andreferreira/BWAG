@@ -1,11 +1,11 @@
 all: bwag.o mmio.o
-	g++ -o bwag bwag.o mmio.o
+	g++ -pg -o bwag bwag.o mmio.o
 
 bwag.o: bwag.cpp
-	g++  -c bwag.cpp
+	g++ -pg -O3 -c bwag.cpp
 
 mmio.o: mmio.c mmio.h
-	gcc -c mmio.c
+	gcc -pg -c mmio.c
 
 clean:
 	rm -f bwag.o mmio.o bwag

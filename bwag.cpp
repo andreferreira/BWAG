@@ -26,8 +26,8 @@ double percentTournament = 0.1; //number of individuals per tournament, can be s
 int tournamentSize; //percenttournament * population_size
 double mutationRate = 0.1; //odds of an individual to mutate in relation to Population Size, can be set by -m flag
 int numberOfIslands = 1; //can be set by -i flag
-int generationsToExchange = 10; //number of generations passed between each exchange
-double percentExchange = 0.1; //% of individuals passed from one island to another during an exchange
+int generationsToExchange = 10; //number of generations passed between each exchange, can be set by -e flag
+double percentExchange = 0.1; //% of individuals from an island passed from one to another during an exchange, can be set by -x flag
 
 void (*selection)(const vector<Individual> &, vector<Individual> &);
 int bandwidth(const Individual &individual) {
@@ -38,10 +38,13 @@ int bandwidth(const Individual &individual) {
 	return band;
 }
 
+vector<int> inverseA;
+vector<int> inverseB;
+
 void PMX(vector<int> a, vector<int> b, vector<int> &son, int location1, int location2) {
 	int size = a.size();
-	vector<int> inverseA(size);
-	vector<int> inverseB(size);
+	inverseA.resize(size);
+	inverseB.resize(size);
 	for (int i = 0; i < size; i++) {
 		inverseA[a[i]] = i;
 		inverseB[b[i]] = i;
@@ -198,6 +201,14 @@ void readOptions(int argc, char *argv[]) {
 					i++;
 					numberOfIslands = atoi(argv[i]);
 					break;
+				case 'e':
+					i++;
+					generationsToExchange = atoi(argv[i]);
+					break;
+				case 'x':
+					i++;
+					percentExchange = atof(argv[i]);
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -259,12 +270,12 @@ void mutatePopulation(vector<Individual> &population) {
 }
 
 void populationFitness(vector<Individual> &population) {
-	unsigned long long avg = 0;
+	//unsigned long long avg = 0;
 	for (int i = 0; i < population.size(); i++) {
 		population[i].fitness = fitness(population[i]);
-		avg += population[i].fitness;
+		//avg += population[i].fitness;
 	}
-	cout<<"Avg:"<<double(avg)/population.size()<<endl;
+	//cout<<"Avg:"<<double(avg)/population.size()<<endl;
 }
 
 class Island {
@@ -272,6 +283,25 @@ class Island {
 	vector<Individual> population;
 	vector<Individual> nextPopulation;
 };
+
+void (*exchange)(vector<Island> &);
+
+//island 0 exchanges with island 1, 1 with 2, etc
+void circularExchange(vector<Island> &archipelago) {
+	int exchangedPop = percentExchange * archipelago[0].population.size();
+	vector<Individual> temp(exchangedPop);
+	copy(archipelago[0].population.begin(),
+		     archipelago[0].population.begin() + exchangedPop,
+			 temp.begin());
+	for (int island = 1; island < archipelago.size(); island++) {
+		copy(archipelago[island].population.begin(),
+		     archipelago[island].population.begin() + exchangedPop,
+			 archipelago[(island-1) % archipelago.size()].population.begin());
+	}
+	copy(temp.begin(),
+		 temp.begin() + exchangedPop,
+		 archipelago[archipelago.size()-1].population.begin());
+}
 
 Individual GAIsland(vector<Individual> initPopulation) {
 	vector<Island> archipelago(numberOfIslands);
@@ -286,7 +316,6 @@ Individual GAIsland(vector<Individual> initPopulation) {
 			islandSize = perIsland;
 		left -= islandSize;
 		archipelago[island].population.resize(islandSize);
-		cout<<"Hi "<<islandSize<<endl;
 		copy(initPopulation.begin() + island*perIsland,
 			 (island+1)*perIsland >= initPopulation.size() ? initPopulation.end() 
 														   : initPopulation.begin() + (island+1)*perIsland,
@@ -307,7 +336,9 @@ Individual GAIsland(vector<Individual> initPopulation) {
 			mutatePopulation(archipelago[island].nextPopulation);
 			swap(archipelago[island].population,archipelago[island].nextPopulation);
 		}
-		cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
+		if (g % generationsToExchange == 0)
+				exchange(archipelago);
+		
 	}
 	return best;
 }
@@ -318,10 +349,12 @@ int main(int argc, char *argv[]) {
 	srand(seed);
 	tournamentSize = percentTournament * population_size;
 	selection = tournamentSelection;
+	exchange = circularExchange;
 	
 	readInput(stdin);
+	Individual (*GA)(vector<Individual>)  = GAIsland;
 	
 	vector<Individual> initPopulation = generateInitialPopulation(population_size);
-	GAIsland(initPopulation);
+	cout<<GA(initPopulation).fitness<<endl;
 	return 0;
 }
