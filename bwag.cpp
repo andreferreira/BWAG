@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <string>
 #include <time.h>
@@ -41,6 +42,8 @@ double bpercent = 0.5; //% of population at b caste, can be set by -b flag
 bool useIsland = true;
 
 bool printSolution = false;
+string plotFileName = ""; //file to save plot data, set by -G flag
+ofstream plotFile;
 
 void (*selection)(const vector<Individual> &, vector<Individual> &);
 int bandwidth(const Individual &individual) {
@@ -236,6 +239,10 @@ void readOptions(int argc, char *argv[]) {
 				case 'C':
 					useIsland = false;
 					break;
+				case 'G':
+					i++;
+					plotFileName = argv[i];
+					break;
 				default:
 					printf("Parametro %d: %s invalido\n",i,argv[i]);
 					exit(1);
@@ -332,6 +339,15 @@ void circularExchange(vector<Island> &archipelago) {
 		 archipelago[archipelago.size()-1].population.begin());
 }
 
+unsigned long long sumFitness(vector<Individual> &population) {
+	unsigned long long sum = 0;
+	populationFitness(population);
+	for (int i = 0; i < population.size(); i++) {
+		sum += population[i].fitness;
+	}
+	return sum;
+}
+
 Individual GAIsland(vector<Individual> initPopulation) {
 	clock_t start = clock();
 	vector<Island> archipelago(numberOfIslands);
@@ -367,12 +383,20 @@ Individual GAIsland(vector<Individual> initPopulation) {
 			mutatePopulation(archipelago[island].nextPopulation);
 			swap(archipelago[island].population,archipelago[island].nextPopulation);
 		}
+		if (plotFileName != "") {
+			unsigned long long totalFitness = 0;
+			int totalPopulation = 0;
+			for (int island = 0; island < numberOfIslands; island++) {
+				totalFitness += sumFitness(archipelago[island].population);
+				totalPopulation += archipelago[island].population.size();
+			}
+			plotFile<<g<<" "<<best.fitness<<" "<<totalFitness/totalPopulation<<endl;
+		}
 		if (g % generationsToExchange == 0)
 				exchange(archipelago);
-		//cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
 		g++;
 	}
-	cout<<"Generations:"<<g<<" ";
+	//cout<<"Generations:"<<g<<" ";
 	return best;
 }
 
@@ -412,9 +436,14 @@ Individual GACaste(vector<Individual> initPopulation) {
 			 casteC.end(),
 			 population.begin() + casteA.size() + casteB.size());
 		//cout<<"Generation:"<<g<<" Best:"<<best.fitness<<endl;
+		if (plotFileName != "") {
+			unsigned long long totalFitness = sumFitness(population);
+			int totalPopulation = population.size();
+			plotFile<<g<<" "<<best.fitness<<" "<<totalFitness/totalPopulation<<endl;
+		}
 		g++;
 	}
-	cout<<"Generations:"<<g<<" ";
+	//cout<<"Generations:"<<g<<" ";
 	return best;
 }
 
@@ -432,13 +461,23 @@ int main(int argc, char *argv[]) {
 		GA = GACaste;
 	exchange = circularExchange;
 	
+	if (plotFileName != "") {
+		ofstream commandFile(plotFileName.c_str());
+		plotFile.open((plotFileName+".dat").c_str());
+		commandFile<<"set terminal png\nset output '"<<plotFileName<<".png'"<<endl;
+		commandFile<<"plot \""<<(plotFileName+".dat")<<"\" using 1:3 title \"Average Fitness\", \""<<(plotFileName+".dat")<<"\" using 1:2 title \"Best Fitness\""<<endl;
+	}
+	
 	vector<Individual> initPopulation(population_size);
 	generateInitialPopulation(initPopulation);
 	Individual solution = GA(initPopulation);
+	if (plotFileName != "") {
+		plotFile<<"e"<<endl;
+	}
 	cout<<solution.fitness<<endl;
 	if (printSolution) {
 		for (int i = 0; i < solution.order.size(); i++) {
-			cout<<solution.order[i]<<" ";
+			//cout<<solution.order[i]<<" ";
 		}
 	}
 	return 0;
