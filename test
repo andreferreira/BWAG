@@ -11,22 +11,24 @@
 #-I para usar Ilha (default)
 #-C para usar Casta
 
-FILE=./problems/jagmesh1.mtx
-
+FILE=./problems/$1.mtx
 
 #echo "bom"
 #./bwag -I -p 40 -t 80 -m 40 -T 10 -e 100 -x 10 -i 4 <./problems/jagmesh1.mtx
 
 #echo "Simple"
 #./bwag -I -p 40 -t 80 -m 40 -T 120 -e 100 -x 10 -i 1 <$FILE
-#echo "With islands"
-#./bwag -I -p 40 -t 80 -m 40 -T 10 -e 100 -x 10 -i 4 <$FILE
+echo $1 with islands
+OUT=result/island.$1
+./bwag -I -p 40 -t 80 -m 40 -T 10 -e 100 -x 10 -i 4 -G $OUT <$FILE >$OUT.best
+gnuplot $OUT
+rm $OUT $OUT.dat
 #echo "With caste"
 #./bwag -C -p 40 -t 80 -m 40 -T 10 -a 10 -b 80 <$FILE
 #echo "Simple"
 #./bwag -C -p 40 -t 80 -m 40 -T 120 -a 0 -b 100 <$FILE
-#echo "Random search"
-OUT=random
-./bwag -C -p 40 -t 01 -m 60 -T 10 -a 0 -b 0 -G $OUT <$FILE
+echo $1 Random search
+OUT=result/random.$1
+./bwag -C -p 40 -t 01 -m 60 -T 10 -a 0 -b 0 -G $OUT <$FILE >$OUT.best
 gnuplot $OUT
 rm $OUT $OUT.dat
