@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./finaltest nos3 &
+./finaltest west0167

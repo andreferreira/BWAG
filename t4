@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./finaltest jagmesh1 &
+./finaltest mcca

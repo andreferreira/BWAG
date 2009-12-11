@@ -484,10 +484,9 @@ int main(int argc, char *argv[]) {
 		plotFile<<"e"<<endl;
 	}
 	cout<<solution.fitness<<endl;
-	if (printSolution) {
-		for (int i = 0; i < solution.order.size(); i++) {
-			//cout<<solution.order[i]<<" ";
-		}
+	for (int i = 0; i < solution.order.size(); i++) {
+		cout<<solution.order[i]<<" ";
 	}
+	
 	return 0;
 }

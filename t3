@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./finaltest bcsstk22 &
+./finaltest fs_183_1

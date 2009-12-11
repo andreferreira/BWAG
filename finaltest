@@ -23,32 +23,41 @@ PLOTSTEP=500
 #gnuplot $OUT
 #rm $OUT $OUT.dat
 
-p1=40
-p2=80
-p3=120
+p1=90
 t1=80
-m1=70
+m1=75
+p2=40
+t2=80
 m2=40
-m3=70
-#p 40 80 120
-#t 20 50 80
-#m 10 40 70
+p3=90
+t3=40
+m3=75
 
 p=$p1
 t=$t1
 m=$m1
-OUT="result/${1}.FINALp${p}t${t}m${m}"
+OUT="FINALresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-rm $OUT $OUT.dat
 
-p=$p1
+p=$p2
+t=$t2
+m=$m2
+OUT="FINALresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+
+p=$p3
+t=$t3
+m=$m3
+OUT="FINALresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+
+p=120
 t=$t1
 m=$m1
-OUT="result/FINALrandom.${1}.p${p}t${t}m${m}"
+OUT="FINALresult/${1}.random"
 echo $OUT
 ./bwag -C -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -a 0 -b 0 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-rm $OUT $OUT.dat
 
