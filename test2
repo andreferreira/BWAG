@@ -39,141 +39,27 @@ m3=75
 p=$p1
 t=$t1
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-p=$p1
-t=$t1
-m=$m1
-OUT="result/random.${1}.p${p}t${t}m${m}"
+OUT="LONGresult/random.${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -C -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -a 0 -b 0 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
 
 
-
-t=$t1
-m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t1
-m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-###
-
-
-t=$t2
-m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t2
-m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t2
-m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-###
-
-
-t=$t3
-m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t3
-m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t3
-m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-#######
-
 p=$p2
-t=$t1
-m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t1
-m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-
-t=$t1
-m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
-echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
-gnuplot $OUT
-
-
-###
-
-
 t=$t2
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
+
+
 
 
 
 t=$t2
 m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -182,7 +68,7 @@ gnuplot $OUT
 
 t=$t2
 m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -193,7 +79,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -202,7 +88,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -211,7 +97,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -223,7 +109,7 @@ gnuplot $OUT
 p=$p3
 t=$t1
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -232,7 +118,7 @@ gnuplot $OUT
 
 t=$t1
 m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -241,7 +127,7 @@ gnuplot $OUT
 
 t=$t1
 m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -252,7 +138,7 @@ gnuplot $OUT
 
 t=$t2
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -261,7 +147,7 @@ gnuplot $OUT
 
 t=$t2
 m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -270,7 +156,7 @@ gnuplot $OUT
 
 t=$t2
 m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -281,7 +167,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m1
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -290,7 +176,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m2
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
@@ -299,7 +185,7 @@ gnuplot $OUT
 
 t=$t3
 m=$m3
-OUT="result/${1}.p${p}t${t}m${m}"
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT

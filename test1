@@ -1,0 +1,159 @@
+#!/bin/bash
+#-p Tamanho populacao total
+#-t Tamanho do torneio = t * Tamanho Populaçao
+#-m Taxa de mutaçao
+#-g Numero de geraçoes a rodar
+#-e A cada -e geraçoes fazer migraçao
+#-x Populaçao da ilha * -x individuos migram
+#-i Numero de ilhas
+#-a tamanho da casta A relativo a populaçao total
+#-b tamanho da casta B relativo a populaçao total
+#-I para usar Ilha (default)
+#-C para usar Casta
+
+FILE=./problems/$1.mtx
+TIME=1200
+PLOTSTEP=500
+#echo "bom"
+#./bwag -I -p 40 -t 80 -m 40 -T 10 -e 100 -x 10 -i 4 -G $OUT <./problems/jagmesh1.mtx
+
+#echo $1 simple
+#OUT="result/${1}.simple"
+#./bwag -I -p 40 -t 80 -m 40 -T 20 -e 100 -x 10 -i 1  <$FILE >$OUT.best
+#gnuplot $OUT
+#
+
+p1=40
+p2=90
+p3=140
+t1=5
+t2=40
+t3=80
+m1=5
+m2=40
+m3=75
+#p 40 80 120
+#t 20 50 80
+#m 10 40 70
+
+p=$p1
+t=$t1
+m=$m1
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+t=$t1
+m=$m2
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t1
+m=$m3
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+###
+
+
+t=$t2
+m=$m1
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t2
+m=$m2
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t2
+m=$m3
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+###
+
+
+t=$t3
+m=$m1
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t3
+m=$m2
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t3
+m=$m3
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+#######
+
+p=$p2
+t=$t1
+m=$m1
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t1
+m=$m2
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+t=$t1
+m=$m3
+OUT="LONGresult/${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+gnuplot $OUT
+
+
+
+
+
+#echo $1 Random search
+#OUT="result/${1}.random"
+#./bwag -C -p 40 -t 01 -m 60 -T 20 -a 0 -b 0  <$FILE >$OUT.best
+#gnuplot $OUT
+#

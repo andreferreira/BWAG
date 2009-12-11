@@ -1,0 +1,3 @@
+set terminal png
+set output 'LONGresult/jagmesh1.p90t80m5.png'
+plot "LONGresult/jagmesh1.p90t80m5.dat" using 1:3 title "Average Fitness", "LONGresult/jagmesh1.p90t80m5.dat" using 1:2 title "Best Fitness"
