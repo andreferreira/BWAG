@@ -38,7 +38,7 @@ t=$t1
 m=$m1
 OUT="FINALresult/${1}.p${p}t${t}m${m}"
 echo $OUT
-#./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 gnuplot $OUT
 
 p=$p2
