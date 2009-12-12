@@ -1,0 +1,3 @@
+set terminal png
+set output 'FINALresult/bcsstk04.p40t80m40.png'
+plot "FINALresult/bcsstk04.p40t80m40.dat" using 1:3 title "Average Fitness", "FINALresult/bcsstk04.p40t80m40.dat" using 1:2 title "Best Fitness"
