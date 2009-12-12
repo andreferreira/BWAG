@@ -1,0 +1,3 @@
+set terminal png
+set output 'FINALresult/west0167.random.png'
+plot "FINALresult/west0167.random.dat" using 1:3 title "Average Fitness", "FINALresult/west0167.random.dat" using 1:2 title "Best Fitness"

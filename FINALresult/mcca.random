@@ -1,0 +1,3 @@
+set terminal png
+set output 'FINALresult/mcca.random.png'
+plot "FINALresult/mcca.random.dat" using 1:3 title "Average Fitness", "FINALresult/mcca.random.dat" using 1:2 title "Best Fitness"
