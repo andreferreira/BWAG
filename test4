@@ -36,13 +36,20 @@ m3=75
 #t 20 50 80
 #m 10 40 70
 
-p=$p1
+
+
+
+
+########
+
+p=$p3
 t=$t1
 m=$m1
 OUT="LONGresult2/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best &
 #gnuplot $OUT
+
 
 
 t=$t1
@@ -87,16 +94,21 @@ t=$t2
 m=$m3
 OUT="LONGresult2/${1}.p${p}t${t}m${m}"
 echo $OUT
-./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best 
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 #gnuplot $OUT
 
-p=$p3
+
+###
+
+
 t=$t3
-m=$m2
+m=$m1
 OUT="LONGresult2/${1}.p${p}t${t}m${m}"
 echo $OUT
 ./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
 #gnuplot $OUT
+
+
 
 
 
