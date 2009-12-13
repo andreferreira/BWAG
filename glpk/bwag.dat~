@@ -1,0 +1,17 @@
+data;
+set VALUES := 1..5;
+
+param Size:= 3;
+
+param InitialLine:=
+1         1
+2         2
+3         2
+4         3;
+
+param InitialColumn:=
+1         1
+2         1
+3         2
+4         3;
+

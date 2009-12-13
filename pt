@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./serialtest bcsstk01
+./serialtest bcsstk04
+
+./paralleltest bcsstk01 &
+./paralleltest bcsstk04

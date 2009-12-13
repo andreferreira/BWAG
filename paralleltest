@@ -1,0 +1,42 @@
+#!/bin/bash
+#-p Tamanho populacao total
+#-t Tamanho do torneio = t * Tamanho Populaçao
+#-m Taxa de mutaçao
+#-g Numero de geraçoes a rodar
+#-e A cada -e geraçoes fazer migraçao
+#-x Populaçao da ilha * -x individuos migram
+#-i Numero de ilhas
+#-a tamanho da casta A relativo a populaçao total
+#-b tamanho da casta B relativo a populaçao total
+#-I para usar Ilha (default)
+#-C para usar Casta
+
+FILE=./problems/$1.mtx
+TIME=6
+PLOTSTEP=500
+#echo "bom"
+#./bwag -I -p 40 -t 80 -m 40 -T 10 -e 100 -x 10 -i 4 -G $OUT <./problems/jagmesh1.mtx
+
+#echo $1 simple
+#OUT="result/${1}.simple"
+#./bwag -I -p 40 -t 80 -m 40 -T 20 -e 100 -x 10 -i 1  <$FILE >$OUT.best
+#gnuplot $OUT
+#rm $OUT $OUT.dat
+
+p1=90
+t1=80
+m1=75
+p2=40
+t2=80
+m2=40
+p3=90
+t3=40
+m3=75
+
+p=$p1
+t=$t1
+m=$m1
+OUT="parallel${1}.p${p}t${t}m${m}"
+echo $OUT
+./bwag -I -p $p -t $t -m $m -T $TIME -g $PLOTSTEP -e 100 -x 10 -i 4 -G $OUT  <$FILE >$OUT.best
+

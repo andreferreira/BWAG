@@ -1,0 +1,50 @@
+ 1      #
+ 2      # Giapetto's problem
+ 3      #
+ 4      # This finds the optimal solution for maximizing Giapetto's profit
+ 5      #
+ 6
+ 7      /* Set of toys */
+ 8      set TOY;
+ 9
+10      /* Parameters */
+11      param Finishing_hours {i in TOY};
+12      param Carpentry_hours {i in TOY};
+13      param Demand_toys     {i in TOY};
+14      param Profit_toys     {i in TOY};
+15
+16      /* Decision variables */
+17      var x {i in TOY} >=0;
+18
+19      /* Objective function */
+20      maximize z: sum{i in TOY} Profit_toys[i]*x[i];
+21
+22      /* Constraints */
+23      s.t. Fin_hours : sum{i in TOY} Finishing_hours[i]*x[i] <= 100;
+24      s.t. Carp_hours : sum{i in TOY} Carpentry_hours[i]*x[i] <= 80;
+25      s.t. Dem {i in TOY} : x[i] <= Demand_toys[i];
+26
+27
+28      data;
+29      /* data  section */
+30
+31      set TOY := soldier train;
+32
+33      param Finishing_hours:=
+34      soldier         2
+35      train           1;
+36
+37      param Carpentry_hours:=
+38      soldier         1
+39      train           1;
+40
+41      param Demand_toys:=
+42      soldier        40
+43      train    6.02E+23;
+44
+45      param Profit_toys:=
+46      soldier         3
+47      train           2;
+48
+49      end;
+
